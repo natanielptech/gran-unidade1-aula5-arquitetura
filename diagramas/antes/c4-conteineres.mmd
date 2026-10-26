@@ -1,0 +1,8 @@
+%% Antes do ADR-04: monolito (exemplo adicional, rótulos genéricos)
+flowchart LR
+    Cliente(["👤 Cliente"]) --> Web["Aplicação Web"]
+    Web --> Mono["Monolito de E-commerce<br/>(Pedido + Pagamento + Estoque + Notificação)"]
+    Mono --> BD[("Banco de Dados")]
+    Mono --> GW["Gateway de Pagamento<br/>[Sistema Externo]"]
+    classDef ext fill:#999,stroke:#666,color:#fff
+    class GW ext

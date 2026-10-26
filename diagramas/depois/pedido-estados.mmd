@@ -1,0 +1,13 @@
+%% Depois do ADR-04: máquina de estados do Pedido anotada
+stateDiagram-v2
+    direction LR
+    [*] --> Criado
+    Criado --> AguardandoPagamento: criarPedido (síncrono)
+    AguardandoPagamento --> Pago: pagamentoAprovado (síncrono)
+    Criado --> Cancelado: cancelar (síncrono)
+    AguardandoPagamento --> Cancelado: pagamentoRecusado / timeout / cancelar (síncrono)
+    Pago --> Enviado: despachar (assíncrono)
+    Enviado --> Entregue: confirmarEntrega (assíncrono)
+    Pago --> Cancelado: EstoqueIndisponivel → estorno (compensação)
+    Entregue --> [*]
+    Cancelado --> [*]

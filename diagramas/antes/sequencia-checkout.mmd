@@ -1,0 +1,18 @@
+%% Antes do ADR-04: checkout síncrono e sequencial (monolito)
+sequenceDiagram
+    actor Cliente
+    participant Web as Aplicação Web
+    participant Pedido as PedidoService
+    participant Pag as Pagamento (módulo)
+    participant Est as Estoque (módulo)
+    participant Not as Notificação (módulo)
+    Cliente->>Web: finalizarCompra()
+    Web->>Pedido: criarPedido()
+    Pedido->>Pag: autorizarPagamento()
+    Pag-->>Pedido: aprovado
+    Pedido->>Est: reservarItens()
+    Est-->>Pedido: reservado
+    Pedido->>Not: enviarNotificacao()
+    Not-->>Pedido: enviada
+    Pedido-->>Web: pedidoConfirmado
+    Web-->>Cliente: confirmação
