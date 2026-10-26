@@ -1,0 +1,22 @@
+%% Depois do ADR-04: C4 nível 2
+C4Container
+    title Contêineres - E-commerce após o ADR-04
+    Person(cliente, "Cliente")
+    System_Boundary(sis, "Sistema de E-commerce") {
+        Container(web, "Aplicação Web", "SPA", "Interface")
+        Container(api, "API de Pedidos", "Serviço", "Orquestra o checkout")
+        Container(pag, "Serviço de Pagamento", "Serviço", "Autoriza pagamentos")
+        ContainerDb(pagdb, "BD de Pagamento", "Banco", "Dados de pagamento")
+        Container(bus, "Barramento de Eventos", "Mensageria", "Entrega eventos")
+        Container(est, "Serviço de Estoque", "Serviço", "Reserva itens")
+        Container(not, "Serviço de Notificações", "Serviço", "Envia e-mails")
+    }
+    System_Ext(gw, "Gateway de Pagamento", "Externo")
+    Rel(cliente, web, "Usa", "HTTPS")
+    Rel(web, api, "Chama", "HTTPS/JSON")
+    Rel(api, pag, "Autoriza (síncrono)", "HTTPS/JSON")
+    Rel(pag, pagdb, "Lê e grava")
+    Rel(pag, gw, "Processa pagamento", "HTTPS")
+    Rel(api, bus, "Publica PedidoPago", "assíncrono")
+    Rel(bus, est, "Entrega PedidoPago")
+    Rel(bus, not, "Entrega PedidoPago")

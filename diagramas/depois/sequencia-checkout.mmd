@@ -1,0 +1,21 @@
+%% Depois do ADR-04: autorização síncrona; estoque e notificações assíncronos
+sequenceDiagram
+    actor Cliente
+    participant Web as Aplicação Web
+    participant Pedido as PedidoService
+    participant Pag as PagamentoService
+    participant Bus as BarramentoEventos
+    participant Est as EstoqueService
+    participant Not as NotificacaoService
+    Cliente->>Web: finalizarCompra()
+    Web->>Pedido: criarPedido()
+    Pedido->>Pag: autorizarPagamento()
+    Pag-->>Pedido: pagamentoAprovado
+    Pedido-)Bus: publica PedidoPago
+    Pedido-->>Web: pedidoConfirmado
+    Web-->>Cliente: confirmação
+    Note over Pedido,Cliente: tempo percebido = só a autorização do pagamento
+    Bus-)Est: PedidoPago
+    Bus-)Not: PedidoPago
+    Est-)Bus: EstoqueIndisponivel (falha rara)
+    Note over Pag,Est: ação compensatória: estornar pagamento e cancelar pedido
